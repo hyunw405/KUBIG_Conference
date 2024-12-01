@@ -5,7 +5,11 @@ from dotenv import load_dotenv
 
 # API 키 로드
 
-key = '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'
+# load .env file
+
+load_dotenv()
+
+key = os.getenv('API_KEY')
 
 # 운동 추천 함수
 def recommend_exercise(height, weight, age_group, favorite_exercise, partner_favorite_exercise):
