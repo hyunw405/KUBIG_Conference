@@ -40,7 +40,7 @@ def find_nearby_facilities(lat, lon, facilities_data, radius=1500):
 
 # 메인 함수
 def final(station_name):
-    API_KEY = "YOUR_KAKAO_API_KEY"  # 카카오 API 키를 입력하세요
+    API_KEY = "48afb747b9bf9aba1c2afe045a8ed165"  # 카카오 API 키를 입력하세요
 
     # 1. 지하철역 좌표 가져오기
     station_coordinates = get_station_coordinates(station_name, API_KEY)
@@ -50,7 +50,7 @@ def final(station_name):
     station_lat, station_lon = station_coordinates
 
     # 2. 시설 데이터 로드
-    facilities_data = pd.read_csv('/path/to/your/facilities_data.csv')
+    facilities_data = pd.read_csv("C:\Users\hwpte\Downloads\체육시설대중교통.csv")
 
     # 3. 반경 1.5km 내 시설 검색
     nearby_facilities = find_nearby_facilities(station_lat, station_lon, facilities_data)
