@@ -9,7 +9,7 @@ from difflib import SequenceMatcher
 file_path = r'C:\Users\hwpte\Downloads\안암역_nearby_facilities.csv'
 
 # CSV 파일 읽기
-data = pd.read_csv(file_path)
+data = pd.read_csv(file_path, encoding ='cp949')
 
 # 시설 이름과 카테고리 추출
 facilities = data[['name', 'category']]
