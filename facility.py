@@ -33,7 +33,7 @@ def get_station_coordinates(station_name, api_key):
 def find_nearby_facilities(lat, lon, facilities_data, radius=1500):
     unique_facilities = []
     for _, row in facilities_data.iterrows():
-        distance = haversine(lat, lon, row['latitude'], row['longitude'])
+        distance = haversine(lat, lon, row['PBTRNSP_FCLTY_LA'], row['PBTRNSP_FCLTY_LO'])
         if distance <= radius:
             unique_facilities.append(row)
     return pd.DataFrame(unique_facilities)
@@ -50,7 +50,7 @@ def final(station_name):
     station_lat, station_lon = station_coordinates
 
     file_path = r"C:\Users\hwpte\Downloads\체육시설대중교통.csv"
-    
+
     # 2. 시설 데이터 로드
     facilities_data = pd.read_csv(file_path)
 
