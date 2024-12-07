@@ -4,12 +4,24 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import pandas as pd
 from difflib import SequenceMatcher
+import chardet
 
-# CSV 파일 경로
+
+# 파일 경로
 file_path = r'C:\Users\hwpte\Downloads\안암역_nearby_facilities.csv'
 
-# CSV 파일 읽기
-data = pd.read_csv(file_path, encoding ='cp949')
+# 파일 인코딩 탐지
+with open(file_path, 'rb') as f:
+    result = chardet.detect(f.read())
+    detected_encoding = result['encoding']
+    print(f"Detected encoding: {detected_encoding}")
+
+# 파일 읽기
+try:
+    data = pd.read_csv(file_path, encoding=detected_encoding)
+except UnicodeDecodeError:
+    # 에러 발생 시 대체 옵션으로 다시 읽기
+    data = pd.read_csv(file_path, encoding=detected_encoding, errors='replace')
 
 # 시설 이름과 카테고리 추출
 facilities = data[['name', 'category']]
