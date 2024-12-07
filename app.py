@@ -3,31 +3,48 @@ import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 import pandas as pd
-from difflib import SequenceMatcher
-import chardet
-
-
-# 시설 이름과 카테고리 추출
-facilities = data[['name', 'category']]
-
-# API 키 로드
-load_dotenv()
-key = os.getenv('API_KEY')
+import facility
 
 # OpenAI 객체 초기화
+load_dotenv()
+key = os.getenv('API_KEY')
 client = OpenAI(api_key=key)
 
-# 문자열 유사도 계산 함수
-def calculate_similarity(a, b):
-    return SequenceMatcher(None, a, b).ratio()
+# Streamlit 애플리케이션
+def main():
+    st.title("데이트 운동 및 시설 추천기")
+    st.write("사용자와 연인의 정보를 입력해보세요. 적합한 운동과 주변 시설을 추천해드립니다!")
 
-# 운동 추천 함수
+    # 사용자 입력
+    age_group = st.selectbox("사용자의 연령대", ["10대", "20대", "30대", "40대", "50대 이상"])
+    favorite_exercise = st.text_input("사용자가 좋아하는 운동 (예: 요가, 조깅)")
+    partner_favorite_exercise = st.text_input("연인이 좋아하는 운동 (예: 테니스, 사이클)")
+    station_name = st.text_input("추천받을 위치 주변 지하철역을 입력해주세요")
+
+    if st.button("운동 및 시설 추천받기"):
+        if not (age_group and favorite_exercise and partner_favorite_exercise and station_name):
+            st.warning("모든 정보를 입력해주세요!")
+        else:
+            # 운동 추천
+            recommendations = recommend_exercise(age_group, favorite_exercise, partner_favorite_exercise)
+            st.subheader("추천 운동")
+            st.write(recommendations)
+
+            # facility.py에서 station_name 기반 데이터프레임 가져오기
+            result_df = facility.main(station_name)
+            st.subheader("추천 시설")
+            if not result_df.empty:
+                st.write(result_df)
+            else:
+                st.write(f"{station_name} 근처에 추천할 시설이 없습니다.")
+
+# OpenAI를 통한 운동 추천 함수
 def recommend_exercise(age_group, favorite_exercise, partner_favorite_exercise):
     prompt = f"""
     사용자와 연인이 함께 할 수 있는 운동을 추천해주세요. 
     고려사항은 아래와 같습니다:
     1. 연령대: {age_group}
-    2. 사용자 선호 운동: {favorite_exercise} 
+    2. 사용자 선호 운동: {favorite_exercise}
     3. 연인의 선호 운동: {partner_favorite_exercise}
     
     조건:
@@ -46,48 +63,6 @@ def recommend_exercise(age_group, favorite_exercise, partner_favorite_exercise):
     except Exception as e:
         return f"추천 중 오류가 발생했습니다: {e}"
 
-# 시설 추천 함수
-def recommend_facility(recommended_activity, facilities):
-    facilities_copy = facilities.copy()
-    facilities_copy['similarity'] = facilities_copy['category'].apply(
-        lambda x: calculate_similarity(recommended_activity, x)
-    )
-    best_match = facilities_copy.sort_values(by='similarity', ascending=False).iloc[0]
-    if best_match['similarity'] > 0.5:
-        return best_match[['name', 'category']]
-    else:
-        return "유사한 시설을 찾을 수 없습니다."
-
-# Streamlit 애플리케이션
-def main():
-    st.title("데이트 운동 및 시설 추천기")
-    st.write("사용자와 연인의 정보를 입력해보세요. 적합한 운동과 주변 시설을 추천해드립니다!")
-
-    age_group = st.selectbox("사용자의 연령대", ["10대", "20대", "30대", "40대", "50대 이상"])
-    favorite_exercise = st.text_input("사용자가 좋아하는 운동 (예: 요가, 조깅)")
-    partner_favorite_exercise = st.text_input("연인이 좋아하는 운동 (예: 테니스, 사이클)")
-    station_name = st.text_input("추천받을 위치 주변 지하철역을 입력해주세요")
-
-    if st.button("운동 및 시설 추천받기"):
-        if not (age_group and favorite_exercise and partner_favorite_exercise):
-            st.warning("모든 정보를 입력해주세요!")
-        else:
-            recommendations = recommend_exercise(age_group, favorite_exercise, partner_favorite_exercise)
-            st.subheader("추천 운동")
-            st.write(recommendations)
-
-            recommended_activity = recommendations.split(":")[0].strip()
-            facility = recommend_facility(recommended_activity, facilities)
-            st.subheader("추천 시설")
-            if isinstance(facility, pd.Series):
-                st.write(f"시설 이름: {facility['name']}, 카테고리: {facility['category']}")
-            else:
-                st.write(facility)
-    
-    def get_station_name():
-        return station_name
-
 
 if __name__ == "__main__":
     main()
-
