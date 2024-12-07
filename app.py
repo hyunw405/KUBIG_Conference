@@ -31,7 +31,7 @@ def main():
             st.write(recommendations)
 
             # facility.py에서 station_name 기반 데이터프레임 가져오기
-            result_df = facility.main(station_name)
+            result_df = facility.final(station_name)
             st.subheader("추천 시설")
             if not result_df.empty:
                 st.write(result_df)
