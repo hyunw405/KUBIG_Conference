@@ -49,8 +49,10 @@ def final(station_name):
 
     station_lat, station_lon = station_coordinates
 
+    file_path = r"C:\Users\hwpte\Downloads\체육시설대중교통.csv"
+    
     # 2. 시설 데이터 로드
-    facilities_data = pd.read_csv("C:\Users\hwpte\Downloads\체육시설대중교통.csv")
+    facilities_data = pd.read_csv(file_path)
 
     # 3. 반경 1.5km 내 시설 검색
     nearby_facilities = find_nearby_facilities(station_lat, station_lon, facilities_data)
