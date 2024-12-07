@@ -5,6 +5,14 @@ from dotenv import load_dotenv
 import pandas as pd
 from difflib import SequenceMatcher
 
+# CSV 파일 경로
+file_path = r'C:\Users\hwpte\Downloads\안암역_nearby_facilities.csv'
+
+# CSV 파일 읽기
+data = pd.read_csv(file_path)
+
+# 시설 이름과 카테고리 추출
+facilities = data[['name', 'category']]
 
 # API 키 로드
 load_dotenv()

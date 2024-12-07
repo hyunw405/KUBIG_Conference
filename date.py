@@ -27,7 +27,7 @@ def recommend_exercise(height, weight, age_group, favorite_exercise, partner_fav
     3. 사용자 선호 운동: {favorite_exercise}
     4. 연인의 선호 운동: {partner_favorite_exercise}
     
-    조건:
+    조건:`
     - 데이트로 적합한 운동일 것.
     - 신체 정보와 연령대를 고려해 너무 과격하지 않으면서 즐거운 활동일 것.
     - 추천 결과는 간단히 제목과 이유를 나열.
