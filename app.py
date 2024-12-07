@@ -7,22 +7,6 @@ from difflib import SequenceMatcher
 import chardet
 
 
-# 파일 경로
-file_path = r'C:\Users\hwpte\Downloads\안암역_nearby_facilities.csv'
-
-# 파일 인코딩 탐지
-with open(file_path, 'rb') as f:
-    result = chardet.detect(f.read())
-    detected_encoding = result['encoding']
-    print(f"Detected encoding: {detected_encoding}")
-
-# 파일 읽기
-try:
-    data = pd.read_csv(file_path, encoding=detected_encoding)
-except UnicodeDecodeError:
-    # 에러 발생 시 대체 옵션으로 다시 읽기
-    data = pd.read_csv(file_path, encoding=detected_encoding, errors='replace')
-
 # 시설 이름과 카테고리 추출
 facilities = data[['name', 'category']]
 
@@ -82,6 +66,7 @@ def main():
     age_group = st.selectbox("사용자의 연령대", ["10대", "20대", "30대", "40대", "50대 이상"])
     favorite_exercise = st.text_input("사용자가 좋아하는 운동 (예: 요가, 조깅)")
     partner_favorite_exercise = st.text_input("연인이 좋아하는 운동 (예: 테니스, 사이클)")
+    station_name = st.text_input("추천받을 위치 주변 지하철역을 입력해주세요")
 
     if st.button("운동 및 시설 추천받기"):
         if not (age_group and favorite_exercise and partner_favorite_exercise):
@@ -98,6 +83,10 @@ def main():
                 st.write(f"시설 이름: {facility['name']}, 카테고리: {facility['category']}")
             else:
                 st.write(facility)
+    
+    def get_station_name():
+        return station_name
+
 
 if __name__ == "__main__":
     main()

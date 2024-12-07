@@ -1,6 +1,7 @@
 import math
 import pandas as pd
 import requests
+import app
 
 # 지구상의 두 좌표 사이의 거리 계산 (Haversine formula)
 def haversine(lat1, lon1, lat2, lon2):
@@ -55,7 +56,8 @@ def find_nearby_facilities(lat, lon, facilities_data, radius=1500):
 # 메인 함수
 def main():
     API_KEY = "48afb747b9bf9aba1c2afe045a8ed165"  # 발급받은 REST API 키
-    station_name = input("지하철역 이름을 입력하세요: ")
+
+    station_name = app.get_station_name()
     
     # 1. 지하철역 좌표 가져오기
     station_coordinates = get_station_coordinates(station_name, API_KEY)
